@@ -140,5 +140,28 @@ class MyTcpServer
     }
     #endregion 
 
+    class Program 
+    {
+        static MyTcpServer server = null; 
+        static void Main(string[] args)
+        {
+            // Run server on different thread.
+            ThreadPool.QueueUserWorkItem(RunServer); 
 
+            Console.WriteLine("Press Esc to stop the server ..."); 
+            ConsoleKeyInfo cki; 
+            while(true)
+            {
+                cki = Console.ReadKey(); 
+                if (cki.Key == ConsoleKey.Escape)
+                    break; 
+            }
+        }
+
+        static void RunServer(object stateInfo) 
+        {
+            server = new MyTcpServer(IPAddress.Loopback,55555); 
+            server.Listen(); 
+        }
+    }
 }
