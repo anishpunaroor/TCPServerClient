@@ -15,4 +15,23 @@ class MyTcpServer
     }
     #endregion 
 
+    #region Properties
+    public IPAddress Address
+    {
+        get { return _address; }
+    }
+
+    public int Port 
+    {
+        get { return _port; }
+    }
+
+    public bool Listening 
+    {
+        get { return _listening; }
+    }
+    #endregion
+
+    
+
 }
