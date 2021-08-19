@@ -72,5 +72,22 @@ class MyTcpServer
             StopListening(); 
         }
     }
+
+    public void StopListening() 
+    {
+        if (_listening)
+        {
+            lock (_syncRoot)
+            {
+                // Stop listening. 
+                _listening = false; 
+
+                _listener.Stop(); 
+            }
+        }
+    }
+    #endregion 
+
     
+
 }
