@@ -68,7 +68,6 @@ class MyTcpServer
         }
         finally 
         {
-            // Stop listening. 
             StopListening(); 
         }
     }
@@ -88,6 +87,58 @@ class MyTcpServer
     }
     #endregion 
 
-    
+    #region Private Methods
+    private void ProcessClient(object client)
+    {
+        TcpClient newClient = (TcpClient)client; 
+        try 
+        {
+            // Buffer for data. 
+            byte[] bytes = new byte[1024]; 
+            StringBuilder clientData = new StringBuilder(); 
+
+            // Use stream to talk with client. 
+            using (NetworkStream ns = newClient.GetStream())
+            {
+                ns.ReadTimeout = 60000; 
+
+                // Receive data sent by client. 
+                int bytesRead = 0; 
+                do 
+                {
+                    try
+                    {
+                        bytesRead = ns.Read(bytes, 0, bytes.Length);
+                        if (bytesRead > 0) 
+                        {
+                            // Translate data to ASCII string and append. 
+                            clientData.Append(Encoding.ASCII.GetString(bytes, 0, bytesRead));
+                            ns.ReadTimeout = 1000; 
+                        }                     
+                    }
+                    catch (IOException ioe)
+                    {
+                        // Data has been retrieveed. 
+                        Trace.WriteLine("Read timed out: " + ioe.ToString());
+                        bytesRead = 0; 
+                    }
+                }
+                while (bytesRead > 0); 
+
+                Trace.WriteLine("Client says: " + clientData.ToString()); 
+                bytes = Encoding.ASCII.GetBytes("Thanks call again!"); 
+
+                // Send response back. 
+                ns.Write(bytes, 0, bytes.length); 
+            }
+        }
+        finally 
+        {
+            if (newClient != null)
+                newClient.Close(); 
+        }
+    }
+    #endregion 
+
 
 }
