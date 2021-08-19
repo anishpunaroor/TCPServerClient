@@ -32,6 +32,45 @@ class MyTcpServer
     }
     #endregion
 
-    
+    #region Public Methods
+    public void Listen() 
+    {
+        try
+        {
+            lock (_syncRoot)
+            {
+                _listener = new TcpListener(_address, _port);
 
+                // Start the server.
+                _listener.Start(); 
+
+                // Begin listening.
+                _listening = true; 
+            }
+
+            do 
+            {
+                Trace.Write("Looking for the client..."); 
+
+                // Wait for a connection.
+                TcpClient newClient = _listener.AcceptTcpClient(); 
+                Trace.WriteLine("Connected to new client.");
+
+                // Queue a request to take care of the client. 
+                ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessClient), newClient); 
+
+            }
+            while (_listening); 
+        }
+        catch (SocketException se)
+        {
+            Trace.WriteLine("SocketException: " + se.ToString());
+        }
+        finally 
+        {
+            // Stop listening. 
+            StopListening(); 
+        }
+    }
+    
 }
