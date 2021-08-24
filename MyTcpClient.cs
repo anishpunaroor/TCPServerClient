@@ -35,6 +35,14 @@ class MyTcpClient
                 Trace.WriteLine("Server said: " + serverResponse); 
             }
         }
+        catch (SocketException se)
+        {
+            Trace.WriteLine("There was an error talking to the server: " + se.ToString()); 
+        }
+        finally 
+        {
+            if (_client != null)
+                _client.Close(); 
+        }
     }
-
 }
