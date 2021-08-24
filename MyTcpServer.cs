@@ -160,7 +160,7 @@ class MyTcpServer
 
         static void RunServer(object stateInfo) 
         {
-            server = new MyTcpServer(IPAddress.Loopback,55555); 
+            server = new MyTcpServer(IPAddress.Loopback, 55555); 
             server.Listen(); 
         }
     }
